@@ -792,12 +792,6 @@ class SkillListing extends Component {
                       </td>
                     </tr>
                     <tr>
-                      <td>Last modified at:</td>
-                      <td>{` ${this.parseDate(
-                        this.state.last_modified_time,
-                      )}`}</td>
-                    </tr>
-                    <tr>
                       <td>Report:</td>
                       <td>
                         <Link to="/Report">Flag as inappropriate</Link>
