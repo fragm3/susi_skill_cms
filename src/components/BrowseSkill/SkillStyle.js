@@ -45,6 +45,14 @@ const styles = {
     flexDirection: 'column',
     width: '100%',
   },
+  container_minimal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    width: '100%',
+    padding: '20px 30px 30px',
+  },
   propContainer: {
     width: 100,
     overflow: 'hidden',
