@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Ratings from 'react-ratings-declarative';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -40,7 +41,7 @@ function createListCard(
               <Link
                 key={el}
                 to={{
-                  pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
+                  pathname: `/${skill.group}/${skill.skillTag}/${language}`,
                   state: {
                     url: skillUrl,
                     element: el,
@@ -65,7 +66,7 @@ function createListCard(
                 key={el}
                 to={{
                   pathname: `/${skill.group}/${
-                    skill.skill_tag
+                    skill.skillTag
                   }/${language}/feedbacks`,
                   state: {
                     url: skillUrl,
@@ -132,7 +133,7 @@ function createListCard(
             <Link
               key={el}
               to={{
-                pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
+                pathname: `/${skill.group}/${skill.skillTag}/${language}`,
                 state: {
                   url: skillUrl,
                   element: el,
@@ -180,7 +181,7 @@ function createListCard(
                   key={el}
                   to={{
                     pathname: `/${skill.group}/${
-                      skill.skill_tag
+                      skill.skillTag
                     }/${language}/feedbacks`,
                     state: {
                       url: skillUrl,
@@ -225,31 +226,17 @@ function createListCard(
 class SkillCardList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      cards: [],
-      skills: this.props.skills,
-    };
+    this.state = {};
   }
 
   componentDidMount() {
     this.loadSkillCards();
   }
 
-  componentDidUpdate() {
-    if (this.props.skills !== this.state.skills) {
-      this.setState(
-        {
-          skills: this.props.skills,
-        },
-        () => this.loadSkillCards(),
-      );
-    }
-  }
-
   loadSkillCards = () => {
     let cards = [];
-    Object.keys(this.state.skills).forEach(el => {
-      let skill = this.state.skills[el];
+    Object.keys(this.props.skills).forEach(el => {
+      let skill = this.props.skills[el];
       let skillName = 'Name not available',
         examples = [],
         image = '',
@@ -259,8 +246,8 @@ class SkillCardList extends Component {
         averageRating = 0,
         totalRating = 0,
         staffPick = false;
-      if (skill.skill_name) {
-        skillName = skill.skill_name;
+      if (skill.skillName) {
+        skillName = skill.skillName;
         skillName = skillName.charAt(0).toUpperCase() + skillName.slice(1);
       }
       if (skill.image) {
@@ -278,9 +265,9 @@ class SkillCardList extends Component {
       if (skill.author) {
         authorName = skill.author;
       }
-      if (skill.skill_rating) {
-        averageRating = parseFloat(skill.skill_rating.stars.avg_star);
-        totalRating = parseInt(skill.skill_rating.stars.total_star, 10);
+      if (skill.skillRating) {
+        averageRating = parseFloat(skill.skillRating.stars.avgStar);
+        totalRating = parseInt(skill.skillRating.stars.totalStar, 10);
       }
 
       if (skill.staffPick) {
@@ -305,18 +292,12 @@ class SkillCardList extends Component {
         ),
       );
     });
-    this.setState({
-      cards,
-    });
+    return cards;
   };
 
   render() {
-    let skillDisplay = '';
-    if (this.props.skills && this.props.skills.length) {
-      skillDisplay = this.state.cards;
-    }
-
-    return <div style={styles.gridList}>{skillDisplay}</div>;
+    // console.log(this.props, "PROPS FROM SkillCardList")
+    return <div style={styles.gridList}>{this.loadSkillCards()}</div>;
   }
 }
 
@@ -327,4 +308,13 @@ SkillCardList.propTypes = {
   modelValue: PropTypes.string,
 };
 
-export default SkillCardList;
+function mapStateToProps(store) {
+  return {
+    ...store.skills,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(SkillCardList);

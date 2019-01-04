@@ -30,6 +30,7 @@ export function fetchMetricsSkills(payload) {
 }
 
 export function fetchLanguageOptions(payload) {
+  console.log(payload, 'groupValue');
   const { groupValue } = payload;
   const url = `${urls.API_URL}/cms/getAllLanguages.json`;
   return ajax.get(url, { group: groupValue });
@@ -41,20 +42,29 @@ export function fetchGroupOptions() {
 }
 
 export function fetchSkills(payload) {
+  // console.log(payload, "Payload api")
   const {
-    modelValue,
     groupValue,
-    languageValue,
+    language,
     filterName,
     filterType,
+    showReviewedSkills,
+    showStaffPicks,
   } = payload;
   const url = `${API_URL}/${CMS_API_PREFIX}/getSkillList.json`;
   return ajax.get(url, {
-    model: modelValue,
     group: groupValue,
-    language: languageValue,
+    // group: 'All',
+    language: language,
+    // language: ['en'],
     applyFilter: 'true',
     filter_name: filterName,
+    // filter_name: "ascending",
     filter_type: filterType,
+    // filter_type: '',
+    reviewed: showReviewedSkills,
+    // reviewed: false,
+    // staff_picks: false,
+    staff_picks: showStaffPicks,
   });
 }

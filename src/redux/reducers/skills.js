@@ -6,7 +6,7 @@ const cookies = new Cookies();
 
 const defaultState = {
   viewType: 'list',
-  loadingSkills: false,
+  loadingSkills: true,
   metricSkills: {
     staffPicksSkills: [],
     topRatedSkills: [],
@@ -20,16 +20,21 @@ const defaultState = {
   skills: [],
   groups: [],
   languages: [],
+
   // Filter
   modelValue: 'general', // constant
   groupValue: 'All',
   languageValue: ['en'],
-  filterName: 'ascending',
+  orderBy: 'ascending',
   filterType: '',
   searchQuery: '',
   ratingRefine: null,
   reviewed: false,
   staffPicks: false,
+  // Pagination
+  entriesPerPage: 10,
+  listPage: 1,
+  listOffset: 0,
 };
 
 const cookiesSettingValues = {
@@ -39,37 +44,63 @@ const cookiesSettingValues = {
 export default handleActions(
   {
     [actionTypes.SKILLS_GET_METRICS_SKILLS](state, { payload }) {
-      const { metricSkills } = payload;
+      const { metrics } = payload;
+      const metricSkills = {
+        staffPicksSkills: metrics.staffPicks,
+        topRatedSkills: metrics.rating,
+        topUsedSkills: metrics.usage,
+        latestUpdatedSkills: metrics.latest,
+        newestSkills: metrics.newest,
+        topFeedbackSkills: metrics.feedback,
+        topGames: metrics.gamesTriviaAndAccessories,
+      };
       return {
         ...state,
-        ...metricSkills,
+        metricSkills,
         loadingSkills: false,
       };
     },
+
     [actionTypes.SKILLS_GET_LANGUAGE_OPTIONS](state, { payload }) {
-      const { languages } = payload;
+      const { languagesArray } = payload;
+      console.log(languagesArray, 'languagesArray');
+      let languages = [];
+      languagesArray.sort();
+      languagesArray.forEach(language => {
+        if (language.length === 2 && language !== 'xx') {
+          languages.push(language);
+        }
+      });
       return {
         ...state,
         languages,
       };
     },
+
     [actionTypes.SKILLS_GET_GROUP_OPTIONS](state, { payload }) {
       const { groups } = payload;
+      groups.sort();
+      groups.unshift('All');
       return {
         ...state,
         groups,
       };
     },
     [actionTypes.SKILLS_GET_SKILL_LIST](state, { payload }) {
+      const { filteredData } = payload;
+      // console.log(payload, "Payload")
       return {
         ...state,
-        ...payload,
+        skills: filteredData,
         loadingSkills: false,
+        listOffset: 0,
+        listPage: 1,
+        entriesPerPage: 10,
       };
     },
     // Filters
     [actionTypes.SKILLS_SET_FILTER_TYPE](state, { payload }) {
-      const { filter_type: filterType } = payload;
+      const { filterType } = payload;
       return {
         ...state,
         filterType,
@@ -85,10 +116,10 @@ export default handleActions(
       };
     },
     [actionTypes.SKILLS_SET_ORDER_BY_FILTER](state, { payload }) {
-      const { filter_name: filterName } = payload;
+      const { orderBy } = payload;
       return {
         ...state,
-        filterName,
+        orderBy,
         loadingSkills: true,
       };
     },
@@ -126,12 +157,13 @@ export default handleActions(
     },
     [actionTypes.SKILLS_SET_STAR_RATING_FILTER](state, { payload }) {
       const { ratingRefine } = payload;
+      console.log(ratingRefine, 'ratingRefine');
       return {
         ...state,
         skills: state.skills.filter(
           skill =>
-            skill.skill_rating &&
-            skill.skill_rating.stars.avg_star >= ratingRefine,
+            skill.skillRating &&
+            skill.skillRating.stars.avgStar >= ratingRefine,
         ),
         ratingRefine,
       };
@@ -143,6 +175,47 @@ export default handleActions(
       return {
         ...state,
         viewType,
+      };
+    },
+
+    [actionTypes.SKILLS_SET_TIME_FILTER](state, { payload }) {
+      const { timeFilter, filterType } = payload;
+      console.log(timeFilter, filterType, 'timeFilter, filterType');
+      return {
+        ...state,
+        timeFilter,
+        filterType,
+        loadingSkills: true,
+      };
+    },
+
+    [actionTypes.SKILLS_SET_SKILLS_PER_PAGE](state, { payload }) {
+      const { entriesPerPage } = payload;
+      let { listPage, skills } = state;
+      let listOffset = entriesPerPage * (listPage - 1);
+      if (listOffset > skills.length - 1) {
+        listPage = Math.ceil(skills.length / entriesPerPage);
+        listOffset = entriesPerPage * (listPage - 1);
+      }
+      return {
+        ...state,
+        entriesPerPage,
+        listSkills: skills.slice(listOffset, listOffset + entriesPerPage),
+        listPage,
+        listOffset,
+      };
+    },
+
+    [actionTypes.SKILLS_SET_PAGE_NUMBER](state, { payload }) {
+      const { listPage } = payload;
+      const { entriesPerPage, skills } = state;
+      const listOffset = entriesPerPage * (listPage - 1);
+
+      return {
+        ...state,
+        listPage,
+        listSkills: skills.slice(listOffset, listOffset + entriesPerPage),
+        listOffset,
       };
     },
   },
