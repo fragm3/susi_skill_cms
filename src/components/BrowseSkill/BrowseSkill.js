@@ -60,7 +60,7 @@ class BrowseSkill extends React.Component {
     entriesPerPage: PropTypes.number,
     ratingRefine: PropTypes.number,
     timeFilter: PropTypes.string,
-    listOffset: PropTypes.string,
+    listOffset: PropTypes.number,
     viewType: PropTypes.string,
     metricSkills: PropTypes.object,
     loadingSkills: PropTypes.bool,
@@ -69,8 +69,6 @@ class BrowseSkill extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewType: 'list',
-      skillURL: null,
       innerWidth: window.innerWidth,
     };
   }
@@ -303,7 +301,7 @@ class BrowseSkill extends React.Component {
   };
 
   render() {
-    const { innerWidth, skillUrl } = this.state;
+    const { innerWidth } = this.state;
 
     const {
       languageValue,
@@ -324,10 +322,6 @@ class BrowseSkill extends React.Component {
     let topBarStyle = styles.topBar;
     let groupsMobile = null;
     let backToHome = null;
-    let metricsContainerStyle = {
-      width: '100%',
-      margin: innerWidth >= 430 ? '10px' : '10px 0px 10px 0px',
-    };
 
     if (innerWidth < 430) {
       sidebarStyle.display = 'none';
@@ -429,69 +423,9 @@ class BrowseSkill extends React.Component {
       );
     }
 
-    const skillCardListData = [
-      {
-        scrollId: 'staffPicks',
-        skills: this.props.metricSkills.staffPicksSkills,
-        heading: 'Staff Picks',
-      },
-      {
-        scrollId: 'topRated',
-        skills: this.props.metricSkills.topRatedSkills,
-        heading: '"SUSI, what are your highest rated skills?"',
-      },
-      {
-        scrollId: 'topUsed',
-        skills: this.props.metricSkills.topUsedSkills,
-        heading: '"SUSI, what are your most used skills?"',
-      },
-      {
-        scrollId: 'newestSkills',
-        skills: this.props.metricSkills.newestSkills,
-        heading: '"SUSI, what are the newest skills?"',
-      },
-      {
-        scrollId: 'latestUpdatedSkills',
-        skills: this.props.metricSkills.latestUpdatedSkills,
-        heading: '"SUSI, what are the recently updated skills?"',
-      },
-      {
-        scrollId: 'topFeedback',
-        skills: this.props.metricSkills.topFeedbackSkills,
-        heading: '"SUSI, what are the skills with most feedback?"',
-      },
-      {
-        scrollId: 'topGames',
-        skills: this.props.metricSkills.topGames,
-        heading: '"SUSI, what are your top games?"',
-      },
-    ];
-
     let renderCardScrollList = '';
-
-    renderCardScrollList = skillCardListData.map(data => {
-      return data.skills.length && !metricsHidden ? (
-        <div style={metricsContainerStyle}>
-          <div style={styles.metricsHeader} className="metrics-header">
-            <h4>{data.heading}</h4>
-          </div>
-          {/* Scroll Id must be unique for all instances of SkillCardList*/}
-          {!routeType && (
-            <SkillCardScrollList
-              scrollId={data.scrollId} // different
-              skills={data.skills} // different
-              modelValue="general"
-              languageValue={languageValue}
-              skillUrl={skillUrl}
-            />
-          )}
-        </div>
-      ) : null;
-    });
-
-    // renderCardScrollList = !metricsHidden && !routeType && (
-    //   <SkillCardScrollList/>
-    // )
+    renderCardScrollList = !metricsHidden &&
+      !routeType && <SkillCardScrollList />;
 
     let renderOrderBy = '';
 

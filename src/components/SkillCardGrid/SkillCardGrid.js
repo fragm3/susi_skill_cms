@@ -59,14 +59,6 @@ class SkillCardGrid extends Component {
                 skill.skillTag +
                 '/' +
                 this.props.languageValue,
-              state: {
-                url: this.props.skillUrl,
-                element: el,
-                name: el,
-                modelValue: this.props.modelValue,
-                groupValue: skill.group,
-                languageValue: this.props.languageValue,
-              },
             }}
           >
             <div style={styles.imageContainer} key={el}>
@@ -106,14 +98,6 @@ class SkillCardGrid extends Component {
                   '/' +
                   this.props.languageValue +
                   '/feedbacks',
-                state: {
-                  url: this.props.skillUrl,
-                  element: el,
-                  name: el,
-                  modelValue: this.props.modelValue,
-                  groupValue: skill.group,
-                  languageValue: this.props.languageValue,
-                },
               }}
             >
               <Ratings
@@ -163,8 +147,6 @@ class SkillCardGrid extends Component {
 SkillCardGrid.propTypes = {
   skills: PropTypes.array,
   languageValue: PropTypes.array,
-  skillUrl: PropTypes.string,
-  modelValue: PropTypes.string,
 };
 
 function mapStateToProps(store) {

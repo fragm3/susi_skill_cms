@@ -11,7 +11,6 @@ import { urls, testExample } from '../../utils';
 function createListCard(
   el,
   skillName,
-  skillUrl,
   authorName,
   description,
   image,
@@ -42,14 +41,6 @@ function createListCard(
                 key={el}
                 to={{
                   pathname: `/${skill.group}/${skill.skillTag}/${language}`,
-                  state: {
-                    url: skillUrl,
-                    element: el,
-                    name: el,
-                    modelValue: skill.model,
-                    groupValue: skill.group,
-                    languageValue: language,
-                  },
                 }}
               >
                 <span>{skillName}</span>
@@ -68,14 +59,6 @@ function createListCard(
                   pathname: `/${skill.group}/${
                     skill.skillTag
                   }/${language}/feedbacks`,
-                  state: {
-                    url: skillUrl,
-                    element: el,
-                    name: el,
-                    modelValue: skill.model,
-                    groupValue: skill.group,
-                    languageValue: language,
-                  },
                 }}
               >
                 <Ratings
@@ -109,15 +92,7 @@ function createListCard(
             <Link
               key={el}
               to={{
-                pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
-                state: {
-                  url: skillUrl,
-                  element: el,
-                  name: el,
-                  modelValue: skill.model,
-                  groupValue: skill.group,
-                  languageValue: language,
-                },
+                pathname: `/${skill.group}/${skill.skillTag}/${language}`,
               }}
             >
               <img alt={skillName} src={image} style={styles.image} />
@@ -134,14 +109,6 @@ function createListCard(
               key={el}
               to={{
                 pathname: `/${skill.group}/${skill.skillTag}/${language}`,
-                state: {
-                  url: skillUrl,
-                  element: el,
-                  name: el,
-                  modelValue: skill.model,
-                  groupValue: skill.group,
-                  languageValue: language,
-                },
               }}
             >
               <span>{skillName}</span>
@@ -183,14 +150,6 @@ function createListCard(
                     pathname: `/${skill.group}/${
                       skill.skillTag
                     }/${language}/feedbacks`,
-                    state: {
-                      url: skillUrl,
-                      element: el,
-                      name: el,
-                      modelValue: skill.model,
-                      groupValue: skill.group,
-                      languageValue: language,
-                    },
                   }}
                 >
                   <Ratings
@@ -242,7 +201,6 @@ class SkillCardList extends Component {
         image = '',
         description = 'No description available',
         authorName = 'Author',
-        skillUrl = this.props.skillUrl,
         averageRating = 0,
         totalRating = 0,
         staffPick = false;
@@ -279,7 +237,6 @@ class SkillCardList extends Component {
         createListCard(
           el,
           skillName,
-          skillUrl,
           authorName,
           description,
           image,
@@ -296,7 +253,6 @@ class SkillCardList extends Component {
   };
 
   render() {
-    // console.log(this.props, "PROPS FROM SkillCardList")
     return <div style={styles.gridList}>{this.loadSkillCards()}</div>;
   }
 }
@@ -304,8 +260,6 @@ class SkillCardList extends Component {
 SkillCardList.propTypes = {
   skills: PropTypes.array,
   languageValue: PropTypes.array,
-  skillUrl: PropTypes.string,
-  modelValue: PropTypes.string,
 };
 
 function mapStateToProps(store) {
